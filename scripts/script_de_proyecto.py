@@ -160,3 +160,69 @@ modelo_lineal_camaron = sm.OLS(y, X).fit()
 print(modelo_lineal_camaron.summary())
 print(modelo_lineal_camaron.conf_int())
 
+# Seleccionando variables de trabajo
+df_diablo_variables = df_diablo[['CamInspection', 'suctionTap', 'StopBlock', 
+                                                                     'StampVerification', 'InterferenceError', 'ErrorCalentador', 
+                                                                     'OkProduction']]
+
+# Calcular matriz de correlacion
+correlaciones_diablo = df_diablo_variables.corr()
+
+# Graficar matriz de correlacion
+plt.figure(figsize=(10, 8))
+sns.set(style="white")  
+sns.heatmap(correlaciones_diablo, annot=True, cmap="coolwarm", linewidths=.5)
+plt.show()
+
+# Generando modelo de regresión
+X = df_diablo_variables.drop('OkProduction', axis=1)
+y = df_diablo_variables['OkProduction']
+X = sm.add_constant(X)
+modelo_lineal_diablo = sm.OLS(y, X).fit()
+print(modelo_lineal_diablo.summary())
+print(modelo_lineal_diablo.conf_int())
+
+# Seleccionando variables de interes
+df_camaron_prediccion = df_camaron[['CamInspection', 'StampVerification', 'InterferenceError', 'OkProduction']]
+# Dividiendo el conjunto de datos
+train_camaron, test_camaron = train_test_split(df_camaron_prediccion, test_size=0.2, random_state=42)
+
+# Definiendo variables
+X_train = train_camaron.drop('OkProduction', axis=1)
+y_train = train_camaron['OkProduction']
+# Generar modelo
+X_train = sm.add_constant(X_train)
+# Entrenando modelo
+modelo_entrenamiento_camaron = sm.OLS(y_train, X_train).fit()
+# Resumen de modelo
+print(modelo_entrenamiento_camaron.summary())
+# Realizar evaluación con datos de prueba
+X_test = test_camaron.drop('OkProduction', axis=1)
+y_test = test_camaron['OkProduction']
+X_test = sm.add_constant(X_test)
+# realizando predicción
+pred_camaron = modelo_entrenamiento_camaron.predict(X_test)
+
+# Evaluando el modelo
+rmse_val = np.sqrt(mean_squared_error(y_test, pred_camaron))
+print(f"RMSE: {rmse_val}")
+r2_test = r2_score(y_test, pred_camaron)
+print(f"R-squared: {r2_test}")
+
+# Seleccionando variables de interes
+df_diablo_prediccion = df_diablo[['suctionTap', 'StampVerification', 'OkProduction']]
+# Dividiendo el conjunto de datos
+train_diablo, test_diablo = train_test_split(df_diablo_prediccion, test_size=0.2, random_state=42)
+
+# Definiendo variables
+X_train = train_diablo.drop('OkProduction', axis=1)
+y_train = train_diablo['OkProduction']
+# Generar modelo
+X_train = sm.add_constant(X_train)
+# Entrenando modelo
+modelo_entrenamiento_diablo = sm.OLS(y_train, X_train).fit()
+# Resumen de modelo
+print(modelo_entrenamiento_diablo.summary())
+
+
+
