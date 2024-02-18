@@ -224,5 +224,17 @@ modelo_entrenamiento_diablo = sm.OLS(y_train, X_train).fit()
 # Resumen de modelo
 print(modelo_entrenamiento_diablo.summary())
 
+# Realizar evaluación con datos de prueba
+X_test = test_diablo.drop('OkProduction', axis=1)
+
+y_test = test_diablo['OkProduction']
+X_test = sm.add_constant(X_test)
+# realizando predicción
+pred_diablo = modelo_entrenamiento_camaron.predict(X_test)
+# Evaluando el modelo
+rmse_val = np.sqrt(mean_squared_error(y_test, pred_diablo))
+print(f"RMSE: {rmse_val}")
+r2_test = r2_score(y_test, pred_diablo)
+print(f”R-squared_{r2_test}”)
 
 
