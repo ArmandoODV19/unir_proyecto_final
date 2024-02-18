@@ -73,3 +73,62 @@ sns.scatterplot(x='shootxmin', y='itemxmin', data=df)
 plt.title('Relación entre Disparos por Minuto y Cantidad de Productos por Minuto')
 plt.show()
 
+# Cambiar el formato de la fecha
+df['date'] = pd.to_datetime(df['date'], format="%d/%m/%Y")
+# Group by 'date' and calculate max(itemxmin)
+summary_result = df.groupby('date').agg(maximo=('itemxmin', 'max')).reset_index()
+
+# Ordenar por fecha
+summary_result = summary_result.sort_values(by='date')
+
+# graficando
+plt.plot(summary_result['date'], summary_result['maximo'])
+plt.xlabel('Fecha')
+plt.ylabel('ItemxMin')
+plt.show()
+
+# Calcular media, mediana, desviacion, varianza
+summary_statistics = summary_result.agg(media=('maximo', 'mean'),
+                                        mediana=('maximo', 'median'),
+                                        desviacion=('maximo', 'std'),
+                                        varianza=('maximo', 'var')).reset_index()
+print(summary_statistics)
+
+# Group by 'date' and calculate max(caminspection)
+summary_result = df.groupby('date').agg(maximo=('ItemxMin', 'max')).reset_index()
+
+# Ordenar por fecha
+summary_result = summary_result.sort_values(by='date')
+
+# graficando
+plt.plot(summary_result['date'], summary_result['maximo'])
+plt.xlabel('Fecha')
+plt.ylabel('CamInspection')
+plt.show()
+
+# Calcular media, mediana, desviacion, varianza
+summary_statistics = summary_result.agg(media=('maximo', 'mean'),
+                                        mediana=('maximo', 'median'),
+                                        desviacion=('maximo', 'std'),
+                                        varianza=('maximo', 'var')).reset_index()
+print(summary_statistics)
+
+# Group by 'date' and calculate max(suctiontap)
+summary_result = df.groupby('date').agg(maximo=(suctiontap', 'max')).reset_index()
+
+# Ordenar por fecha
+summary_result = summary_result.sort_values(by='date')
+
+# graficando
+plt.plot(summary_result['date'], summary_result['maximo'])
+plt.xlabel('Fecha')
+plt.ylabel('suctiontap')
+plt.show()
+
+# Calcular media, mediana, desviacion, varianza
+summary_statistics = summary_result.agg(media=('maximo', 'mean'),
+                                        mediana=('maximo', 'median'),
+                                        desviacion=('maximo', 'std'),
+                                        varianza=('maximo', 'var')).reset_index()
+
+print(summary_statistics)
