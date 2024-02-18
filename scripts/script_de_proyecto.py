@@ -132,3 +132,31 @@ summary_statistics = summary_result.agg(media=('maximo', 'mean'),
                                         varianza=('maximo', 'var')).reset_index()
 
 print(summary_statistics)
+
+df_diablo = nissin[nissin['ProductType'] == 'DIABLO']
+df_camaron = nissin[nissin['ProductType'] == 'HS CAMARON']
+
+# Seleccionando variables de trabajo
+df_camaron_variables = df_camaron[['CamInspection', 'suctionTap', 'StopBlock', 
+                                                                     'StampVerification', 'InterferenceError', 'ErrorCalentador', 
+                                                                     'OkProduction']]
+
+# Calcular matriz de correlacion
+correlaciones_camaron = df_camaron_variables.corr()
+
+# Graficar matriz de correlacion
+plt.figure(figsize=(10, 8))
+sns.set(style="white")  
+sns.heatmap(correlaciones_camaron, annot=True, cmap="coolwarm", linewidths=.5)
+plt.show()
+
+# Generando modelo de regresión
+
+X = df_camaron_variables.drop('OkProduction', axis=1)
+y = df_camaron_variables['OkProduction']
+
+X = sm.add_constant(X)
+modelo_lineal_camaron = sm.OLS(y, X).fit()
+print(modelo_lineal_camaron.summary())
+print(modelo_lineal_camaron.conf_int())
+
